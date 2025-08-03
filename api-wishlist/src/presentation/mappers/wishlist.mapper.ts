@@ -1,6 +1,6 @@
 import { Wishlist } from '@domain/entities/wishlist.entity';
 
-import { WishlistResponseDto, WishlistItemResponseDto } from '../dto/wishlist-response.dto';
+import { WishlistResponseDto, WishlistItemResponseDto } from '../dto/wishlist/wishlist-response.dto';
 
 export class WishlistMapper {
   static toResponse(wishlist: Wishlist): WishlistResponseDto {

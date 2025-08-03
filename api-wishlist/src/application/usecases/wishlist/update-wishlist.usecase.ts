@@ -2,7 +2,7 @@ import { Injectable, NotFoundException, InternalServerErrorException, Logger } f
 
 import { WishlistRepositoryContract } from '@domain/entities/repositories/wishlist.repository.contract';
 import { Wishlist, WishlistItem } from '@domain/entities/wishlist.entity';
-import { CreateWishlistDto } from '@presentation/dto/create-wishlist.dto';
+import { CreateWishlistDto } from '@presentation/dto/wishlist/create-wishlist.dto';
 
 @Injectable()
 export class UpdateWishlistUseCase {

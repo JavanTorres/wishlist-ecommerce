@@ -3,7 +3,7 @@ import { v4 as uuidv4 } from 'uuid';
 
 import { WishlistRepositoryContract } from '@domain/entities/repositories/wishlist.repository.contract';
 import { Wishlist, WishlistItem } from '@domain/entities/wishlist.entity';
-import { CreateWishlistDto } from '@presentation/dto/create-wishlist.dto';
+import { CreateWishlistDto } from '@presentation/dto/wishlist/create-wishlist.dto';
 
 @Injectable()
 export class CreateWishlistUseCase {
@@ -18,7 +18,7 @@ export class CreateWishlistUseCase {
         item =>
           new WishlistItem(
             item.productUuid,
-            new Date(), // addedAt gerado automaticamente
+            new Date(),
             item.notes,
           ),
       ) || [],

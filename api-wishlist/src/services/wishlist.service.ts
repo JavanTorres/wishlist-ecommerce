@@ -6,7 +6,7 @@ import { FindAllWishlistsUseCase } from '@application/usecases/wishlist/find-all
 import { FindWishlistByIdUseCase } from '@application/usecases/wishlist/find-wishlist-by-id.usecase';
 import { UpdateWishlistUseCase } from '@application/usecases/wishlist/update-wishlist.usecase';
 import { Wishlist } from '@domain/entities/wishlist.entity';
-import { CreateWishlistDto } from '@presentation/dto/create-wishlist.dto';
+import { CreateWishlistDto } from '@presentation/dto/wishlist/create-wishlist.dto';
 
 @Injectable()
 export class WishlistService {

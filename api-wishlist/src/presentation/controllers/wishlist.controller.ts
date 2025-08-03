@@ -9,6 +9,7 @@ import {
   Post,
   Put,
   ValidationPipe,
+  UseGuards,
 } from '@nestjs/common';
 import {
   ApiTags,
@@ -19,20 +20,22 @@ import {
   ApiParam,
   ApiNotFoundResponse,
   ApiNoContentResponse,
+  ApiBearerAuth,
 } from '@nestjs/swagger';
 
-
-
-import { CreateWishlistRequestDto } from '@presentation/dto/create-wishlist-request.dto';
-import { WishlistResponseDto } from '@presentation/dto/wishlist-response.dto';
+import { JwtAuthGuard } from '@modules/jwt-auth.guard';
+import { CreateWishlistRequestDto } from '@presentation/dto/wishlist/create-wishlist-request.dto';
+import { WishlistResponseDto } from '@presentation/dto/wishlist/wishlist-response.dto';
 import { WishlistMapper } from '@presentation/mappers/wishlist.mapper';
 import { WishlistService } from '@services/wishlist.service';
 
+@ApiBearerAuth('JWT')
 @Controller({
   path: 'wishlists',
   version: '1',
 })
-@ApiTags('wishlists')
+@ApiTags('Wishlist')
+@UseGuards(JwtAuthGuard)
 export class WishlistController {
   constructor(private readonly wishlistService: WishlistService) {}
 
