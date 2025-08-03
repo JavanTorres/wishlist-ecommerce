@@ -10,3 +10,4 @@
 
 
   Implementei GraphQL no BFF para dar maior flexibilidade ao frontend e permitir evolução futura. No microserviço optei por REST, pois é mais adequado para regras de domínio e simplifica a comunicação interna entre serviços.
+  .
