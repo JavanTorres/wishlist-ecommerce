@@ -1,6 +1,3 @@
-
-
-
 services:
   redis:
     image: redis:latest
@@ -9,7 +6,7 @@ services:
     ports:
       - "6379:6379"
     networks:
-      - default
+      - wishlist-net
 
   mongodb:
     image: mongo:latest
@@ -24,7 +21,7 @@ services:
       - mongo-data:/data/db
       - mongo-config-data:/data/configdb
     networks:
-      - default
+      - wishlist-net
 
   mongo-express:
     image: mongo-express:latest
@@ -38,7 +35,7 @@ services:
       ME_CONFIG_MONGODB_URL: "mongodb://mymongoadmin:mymongopassword@mongodb:27017/?authSource=admin"
       ME_CONFIG_BASICAUTH: "false"
     networks:
-      - default
+      - wishlist-net
 
   app:
     build:
@@ -57,21 +54,20 @@ services:
       - CHOKIDAR_USEPOLLING=true
       - CHOKIDAR_INTERVAL=100
       - NODE_ENV=development
-      - MONGO_URI=mongodb://mymongoadmin:mymongopassword@mongodb:27017/mydb?authSource=admin
     ports:
       - "3000:3000"
     volumes:
       - ./:/usr/src/app
-      - app_node_modules:/usr/src/app/node_modules
+      - api_node_modules:/usr/src/app/node_modules
     command: pnpm run start:dev:ts
     networks:
-      - default
+      - wishlist-net
 
 volumes:
-  app_node_modules:
+  api_node_modules:
   mongo-data:
   mongo-config-data:
 
 networks:
-  default:
-    name: wishlist-net
+  wishlist-net:
+    driver: bridge
