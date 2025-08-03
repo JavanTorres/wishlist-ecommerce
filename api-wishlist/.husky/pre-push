@@ -1,0 +1,11 @@
+pnpm run test || {
+  echo "\n🚫 Erro: alguns testes falharam. Corrija-os antes de dar push.\n"
+  exit 1
+}
+
+pnpm run commitlint || {
+  echo "\n🚫 Erro: um ou mais commits NÃO seguem o Conventional Commits!"
+  echo "Formato esperado: <tipo>(<escopo?>): descrição"
+  echo "Exemplo: feat(auth): adicionar middleware de autenticação\n"
+  exit 1
+}
