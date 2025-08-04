@@ -10,6 +10,7 @@ import {
   Put,
   ValidationPipe,
   UseGuards,
+  Request,
 } from '@nestjs/common';
 import {
   ApiTags,
@@ -48,10 +49,15 @@ export class WishlistController {
   })
   @ApiBadRequestResponse({ description: 'Dados inválidos' })
   async create(
+    @Request() req: any,
     @Body(new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true }))
     createWishlistRequestDto: CreateWishlistRequestDto,
   ): Promise<WishlistResponseDto> {
-    const wishlist = await this.wishlistService.create(createWishlistRequestDto);
+    const userUuid = req.user.uuid;
+    const wishlist = await this.wishlistService.create({
+      ...createWishlistRequestDto,
+      userUuid,
+    });
     return WishlistMapper.toResponse(wishlist);
   }
 
@@ -106,13 +112,18 @@ export class WishlistController {
   })
   @ApiBadRequestResponse({ description: 'Dados inválidos' })
   async update(
+    @Request() req: any,
     @Param('uuid') uuid: string,
     @Body(new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true }))
     createWishlistRequestDto: CreateWishlistRequestDto,
   ): Promise<WishlistResponseDto> {
+    const userUuid = req.user.uuid;
     const wishlist = await this.wishlistService.update(
       uuid,
-      createWishlistRequestDto,
+      {
+        ...createWishlistRequestDto,
+        userUuid,
+      },
     );
     return WishlistMapper.toResponse(wishlist);
   }

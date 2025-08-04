@@ -22,14 +22,6 @@ export class CreateWishlistItemRequestDto {
 
 export class CreateWishlistRequestDto {
   @ApiProperty({
-    example: '123e4567-e89b-12d3-a456-426614174001',
-    description: 'UUID do usuário dono da wishlist',
-  })
-  @IsNotEmpty()
-  @IsString()
-  userUuid: string;
-
-  @ApiProperty({
     example: 'Favoritos Games',
     description: 'Nome da wishlist',
   })
