@@ -12,14 +12,6 @@ export abstract class HttpBffGateway {
 
   constructor(protected readonly httpService: HttpService) { }
 
-  protected buildHeaders(): Record<string, any> {
-    const req = RequestContext.currentContext.req;
-    const token = req.headers.authorization?.split('&&')[0];
-    return {
-      Authorization: !token.startsWith('Bearer ') ? `Bearer ${token}` : token,
-    };
-  }
-
   async gatewayHandler(
     url: string,
     method: HttpMethodEnum,
@@ -44,8 +36,7 @@ export abstract class HttpBffGateway {
   }
 
   private async request(url: string, method: HttpMethodEnum, data: any = {}, headers: Record<string, string> | null = {}) {
-
-    const config = { headers: { ...this.buildHeaders(), ...headers } };
+    const config = { headers: { ...headers } };
 
     switch (method) {
       case HttpMethodEnum.GET:

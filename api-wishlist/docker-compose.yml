@@ -70,4 +70,4 @@ volumes:
 
 networks:
   wishlist-net:
-    driver: bridge
+    external: true
