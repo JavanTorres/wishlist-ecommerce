@@ -10,21 +10,22 @@ export class CreateWishlistUseCase {
   constructor(private readonly wishlistRepository: WishlistRepositoryContract) {}
 
   async execute(createWishlistDto: CreateWishlistDto): Promise<Wishlist> {
-    const wishlist = new Wishlist(
+    const items = createWishlistDto.items?.map(
+      item =>
+        new WishlistItem(
+          item.productUuid,
+          new Date(),
+          item.notes,
+        ),
+    ) || [];
+
+    const wishlist = Wishlist.create(
       uuidv4(),
       createWishlistDto.userUuid,
       createWishlistDto.name,
-      createWishlistDto.items?.map(
-        item =>
-          new WishlistItem(
-            item.productUuid,
-            new Date(),
-            item.notes,
-          ),
-      ) || [],
-      new Date(),
-      new Date(),
+      items,
     );
+
     return this.wishlistRepository.create(wishlist);
   }
 }

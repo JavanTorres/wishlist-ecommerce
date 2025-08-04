@@ -1,6 +1,7 @@
 import { WishlistRepositoryContract } from '@domain/entities/repositories/wishlist.repository.contract';
 import { Wishlist, WishlistItem } from '@domain/entities/wishlist.entity';
 import { CreateWishlistDto } from '@presentation/dto/wishlist/create-wishlist.dto';
+import { WishlistLimitExceededException } from '@shared/exceptions/wishlist-limit-exceeded.exception';
 
 import { CreateWishlistUseCase } from '../create-wishlist.usecase';
 
@@ -61,6 +62,53 @@ describe('CreateWishlistUseCase', () => {
     expect(createdArg.items[0].productUuid).toBe(dto.items![0].productUuid);
     expect(createdArg.items[0].notes).toBe(dto.items![0].notes);
 
+    expect(result).toBe(expectedWishlist);
+  });
+
+  it('deve lançar WishlistLimitExceededException quando tentar criar wishlist com mais de 20 itens', async () => {
+    const itemsOver20 = Array.from({ length: 21 }, (_, index) => ({
+      productUuid: `123e4567-e89b-12d3-a456-42661417${index.toString().padStart(4, '0')}`,
+      notes: `Item ${index + 1}`,
+    }));
+
+    const dto: CreateWishlistDto = {
+      userUuid: '123e4567-e89b-12d3-a456-426614174001',
+      name: 'Wishlist com muitos itens',
+      items: itemsOver20,
+    };
+
+    await expect(useCase.execute(dto)).rejects.toThrow(WishlistLimitExceededException);
+    expect(repo.create).not.toHaveBeenCalled();
+  });
+
+  it('deve criar wishlist com exatamente 20 itens', async () => {
+    const exactlyTwentyItems = Array.from({ length: 20 }, (_, index) => ({
+      productUuid: `123e4567-e89b-12d3-a456-42661417${index.toString().padStart(4, '0')}`,
+      notes: `Item ${index + 1}`,
+    }));
+
+    const dto: CreateWishlistDto = {
+      userUuid: '123e4567-e89b-12d3-a456-426614174001',
+      name: 'Wishlist com 20 itens',
+      items: exactlyTwentyItems,
+    };
+
+    const expectedWishlist = new Wishlist(
+      expect.any(String),
+      dto.userUuid,
+      dto.name,
+      expect.arrayContaining([expect.any(WishlistItem)]),
+      expect.any(Date),
+      expect.any(Date),
+    );
+
+    repo.create.mockResolvedValue(expectedWishlist);
+
+    const result = await useCase.execute(dto);
+
+    expect(repo.create).toHaveBeenCalledTimes(1);
+    const createdArg = repo.create.mock.calls[0][0];
+    expect(createdArg.items.length).toBe(20);
     expect(result).toBe(expectedWishlist);
   });
 });

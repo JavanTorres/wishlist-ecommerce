@@ -39,9 +39,28 @@ async function bootstrap() {
       whitelist: true,
       forbidNonWhitelisted: true,
       exceptionFactory(errors) {
-        const messages = errors
-          .map((err) => Object.values(err.constraints || {}))
-          .flat();
+        const formatError = (err: any, path = ''): string[] => {
+          const currentPath = path ? `${path}.${err.property}` : err.property;
+          
+          if (err.children && err.children.length > 0) {
+            // Se tem filhos (erros aninhados), processa recursivamente
+            return err.children.flatMap((child: any) => 
+              formatError(child, currentPath)
+            );
+          }
+          
+          if (err.constraints) {
+            // Se tem constraints, formata as mensagens
+            return Object.values(err.constraints).map((constraint: any) => 
+              `${currentPath}: ${constraint}`
+            );
+          }
+          
+          return [`${currentPath}: validation failed`];
+        };
+
+        const messages = errors.flatMap(err => formatError(err));
+        
         return new BadRequestException({
           statusCode: HttpStatus.BAD_REQUEST,
           error: 'Erro de validação',

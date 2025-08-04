@@ -3,6 +3,7 @@ import { Injectable, NotFoundException, InternalServerErrorException, Logger } f
 import { WishlistRepositoryContract } from '@domain/entities/repositories/wishlist.repository.contract';
 import { Wishlist, WishlistItem } from '@domain/entities/wishlist.entity';
 import { CreateWishlistDto } from '@presentation/dto/wishlist/create-wishlist.dto';
+import { WishlistLimitExceededException } from '@shared/exceptions/wishlist-limit-exceeded.exception';
 
 @Injectable()
 export class UpdateWishlistUseCase {
@@ -12,21 +13,24 @@ export class UpdateWishlistUseCase {
 
   async execute(uuid: string, updateWishlistDto: CreateWishlistDto) {
     try {
-      const wishlist = new Wishlist(
+      const items = updateWishlistDto.items?.map(
+        item =>
+          new WishlistItem(
+            item.productUuid,
+            new Date(),
+            item.notes,
+          ),
+      ) || [];
+
+      const wishlist = Wishlist.create(
         uuid,
         updateWishlistDto.userUuid,
         updateWishlistDto.name,
-        updateWishlistDto.items?.map(
-          item =>
-            new WishlistItem(
-              item.productUuid,
-              new Date(),
-              item.notes,
-            ),
-        ) || [],
+        items,
         new Date(),
         new Date(),
       );
+
       const wishlistUpdated = await this.wishlistRepository.update(wishlist);
       if (!wishlistUpdated) {
         throw new NotFoundException(`Wishlist uuid ${uuid} não encontrada.`);
@@ -35,6 +39,9 @@ export class UpdateWishlistUseCase {
     } catch (error) {
       this.logger.error(`Erro ao atualizar wishlist uuid ${uuid}:`, error.stack || error);
       if (error instanceof NotFoundException) {
+        throw error;
+      }
+      if (error instanceof WishlistLimitExceededException) {
         throw error;
       }
       throw new InternalServerErrorException(error.message);
