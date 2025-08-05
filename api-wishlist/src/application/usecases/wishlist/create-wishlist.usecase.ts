@@ -14,7 +14,7 @@ export class CreateWishlistUseCase {
       item =>
         new WishlistItem(
           item.productUuid,
-          new Date(),
+          item.addedAt || new Date(),
           item.notes,
         ),
     ) || [];

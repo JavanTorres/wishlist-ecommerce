@@ -1,6 +1,7 @@
 import { WishlistRepositoryContract } from '@domain/entities/repositories/wishlist.repository.contract';
 import { Wishlist, WishlistItem } from '@domain/entities/wishlist.entity';
 import { CreateWishlistDto } from '@presentation/dto/wishlist/create-wishlist.dto';
+import { DuplicateProductInWishlistException } from '@shared/exceptions/duplicate-product-in-wishlist.exception';
 import { WishlistLimitExceededException } from '@shared/exceptions/wishlist-limit-exceeded.exception';
 
 import { CreateWishlistUseCase } from '../create-wishlist.usecase';
@@ -35,19 +36,18 @@ describe('CreateWishlistUseCase', () => {
       ],
     };
 
-    const expectedWishlist = new Wishlist(
-      expect.any(String),
-      dto.userUuid,
-      dto.name,
-      [
-        expect.any(WishlistItem),
-        expect.any(WishlistItem),
-      ],
-      expect.any(Date),
-      expect.any(Date),
+    const wishlistItems = dto.items.map(item => 
+      new WishlistItem(item.productUuid, new Date(), item.notes)
     );
 
-    repo.create.mockResolvedValue(expectedWishlist);
+    const mockWishlist = Wishlist.create(
+      'test-uuid',
+      dto.userUuid,
+      dto.name,
+      wishlistItems,
+    );
+
+    repo.create.mockResolvedValue(mockWishlist);
 
     const result = await useCase.execute(dto);
 
@@ -62,7 +62,7 @@ describe('CreateWishlistUseCase', () => {
     expect(createdArg.items[0].productUuid).toBe(dto.items![0].productUuid);
     expect(createdArg.items[0].notes).toBe(dto.items![0].notes);
 
-    expect(result).toBe(expectedWishlist);
+    expect(result).toEqual(mockWishlist);
   });
 
   it('deve lançar WishlistLimitExceededException quando tentar criar wishlist com mais de 20 itens', async () => {
@@ -93,22 +93,45 @@ describe('CreateWishlistUseCase', () => {
       items: exactlyTwentyItems,
     };
 
-    const expectedWishlist = new Wishlist(
-      expect.any(String),
-      dto.userUuid,
-      dto.name,
-      expect.arrayContaining([expect.any(WishlistItem)]),
-      expect.any(Date),
-      expect.any(Date),
+    const wishlistItems = dto.items.map(item => 
+      new WishlistItem(item.productUuid, new Date(), item.notes)
     );
 
-    repo.create.mockResolvedValue(expectedWishlist);
+    const mockWishlist = Wishlist.create(
+      'test-uuid',
+      dto.userUuid,
+      dto.name,
+      wishlistItems,
+    );
+
+    repo.create.mockResolvedValue(mockWishlist);
 
     const result = await useCase.execute(dto);
 
     expect(repo.create).toHaveBeenCalledTimes(1);
     const createdArg = repo.create.mock.calls[0][0];
     expect(createdArg.items.length).toBe(20);
-    expect(result).toBe(expectedWishlist);
+    expect(result).toEqual(mockWishlist);
+  });
+
+  it('deve lançar DuplicateProductInWishlistException quando há produtos duplicados (vem da entidade)', async () => {
+    const dto: CreateWishlistDto = {
+      userUuid: '123e4567-e89b-12d3-a456-426614174001',
+      name: 'Favoritos Games',
+      items: [
+        {
+          productUuid: '123e4567-e89b-12d3-a456-426614174002',
+          notes: 'Produto 1',
+        },
+        {
+          productUuid: '123e4567-e89b-12d3-a456-426614174002', // Duplicado
+          notes: 'Produto 1 duplicado',
+        },
+      ],
+    };
+
+    // A exception deve vir da entidade, não do use case
+    await expect(useCase.execute(dto)).rejects.toThrow(DuplicateProductInWishlistException);
+    expect(repo.create).not.toHaveBeenCalled();
   });
 });

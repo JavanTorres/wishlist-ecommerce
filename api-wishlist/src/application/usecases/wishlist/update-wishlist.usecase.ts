@@ -3,6 +3,7 @@ import { Injectable, NotFoundException, InternalServerErrorException, Logger } f
 import { WishlistRepositoryContract } from '@domain/entities/repositories/wishlist.repository.contract';
 import { Wishlist, WishlistItem } from '@domain/entities/wishlist.entity';
 import { CreateWishlistDto } from '@presentation/dto/wishlist/create-wishlist.dto';
+import { DuplicateProductInWishlistException } from '@shared/exceptions/duplicate-product-in-wishlist.exception';
 import { WishlistLimitExceededException } from '@shared/exceptions/wishlist-limit-exceeded.exception';
 
 @Injectable()
@@ -17,7 +18,7 @@ export class UpdateWishlistUseCase {
         item =>
           new WishlistItem(
             item.productUuid,
-            new Date(),
+            item.addedAt || new Date(), // Preserva a data original se existir
             item.notes,
           ),
       ) || [];
@@ -42,6 +43,9 @@ export class UpdateWishlistUseCase {
         throw error;
       }
       if (error instanceof WishlistLimitExceededException) {
+        throw error;
+      }
+      if (error instanceof DuplicateProductInWishlistException) {
         throw error;
       }
       throw new InternalServerErrorException(error.message);

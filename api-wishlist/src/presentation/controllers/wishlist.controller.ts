@@ -22,9 +22,11 @@ import {
   ApiNotFoundResponse,
   ApiNoContentResponse,
   ApiBearerAuth,
+  ApiForbiddenResponse,
 } from '@nestjs/swagger';
 
 import { JwtAuthGuard } from '@modules/jwt-auth.guard';
+import { AddItemRequestDto } from '@presentation/dto/wishlist/add-item-request.dto';
 import { CreateWishlistRequestDto } from '@presentation/dto/wishlist/create-wishlist-request.dto';
 import { WishlistResponseDto } from '@presentation/dto/wishlist/wishlist-response.dto';
 import { WishlistMapper } from '@presentation/mappers/wishlist.mapper';
@@ -126,5 +128,92 @@ export class WishlistController {
       },
     );
     return WishlistMapper.toResponse(wishlist);
+  }
+
+  @Post(':uuid/items')
+  @HttpCode(HttpStatus.CREATED)
+  @ApiOperation({ summary: 'Adiciona um produto na wishlist do cliente' })
+  @ApiParam({ name: 'uuid', description: 'UUID da wishlist' })
+  @ApiCreatedResponse({
+    description: 'Produto adicionado com sucesso',
+    type: WishlistResponseDto,
+  })
+  @ApiBadRequestResponse({ description: 'Dados inválidos, limite excedido ou produto já existe na wishlist' })
+  @ApiNotFoundResponse({ description: 'Wishlist não encontrada' })
+  @ApiForbiddenResponse({ description: 'Acesso não autorizado à wishlist' })
+  async addItem(
+    @Request() req: any,
+    @Param('uuid') uuid: string,
+    @Body(new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true }))
+    addItemDto: AddItemRequestDto,
+  ): Promise<WishlistResponseDto> {
+    const userUuid = req.user.uuid;
+    const wishlist = await this.wishlistService.addItem(uuid, userUuid, addItemDto);
+    return WishlistMapper.toResponse(wishlist);
+  }
+
+  @Delete(':uuid/items/:productUuid')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Remove um produto da wishlist do cliente' })
+  @ApiParam({ name: 'uuid', description: 'UUID da wishlist' })
+  @ApiParam({ name: 'productUuid', description: 'UUID do produto' })
+  @ApiOkResponse({
+    description: 'Produto removido com sucesso',
+    type: WishlistResponseDto,
+  })
+  @ApiNotFoundResponse({ description: 'Wishlist ou produto não encontrado' })
+  @ApiForbiddenResponse({ description: 'Acesso não autorizado à wishlist' })
+  async removeItem(
+    @Request() req: any,
+    @Param('uuid') uuid: string,
+    @Param('productUuid') productUuid: string,
+  ): Promise<WishlistResponseDto> {
+    const userUuid = req.user.uuid;
+    const wishlist = await this.wishlistService.removeItem(uuid, userUuid, productUuid);
+    return WishlistMapper.toResponse(wishlist);
+  }
+
+  @Get(':uuid/items')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Consulta todos os produtos da wishlist do cliente' })
+  @ApiParam({ name: 'uuid', description: 'UUID da wishlist' })
+  @ApiOkResponse({
+    description: 'Lista de produtos da wishlist',
+    type: WishlistResponseDto,
+  })
+  @ApiNotFoundResponse({ description: 'Wishlist não encontrada' })
+  async getItems(
+    @Request() req: any,
+    @Param('uuid') uuid: string,
+  ): Promise<WishlistResponseDto> {
+    const userUuid = req.user.uuid;
+    const wishlist = await this.wishlistService.findByIdAndUser(uuid, userUuid);
+    return WishlistMapper.toResponse(wishlist);
+  }
+
+  @Get(':uuid/items/:productUuid')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Consulta se um produto está na wishlist do cliente' })
+  @ApiParam({ name: 'uuid', description: 'UUID da wishlist' })
+  @ApiParam({ name: 'productUuid', description: 'UUID do produto' })
+  @ApiOkResponse({
+    description: 'Produto encontrado na wishlist',
+    schema: {
+      type: 'object',
+      properties: {
+        exists: { type: 'boolean' },
+        item: { type: 'object', nullable: true },
+      },
+    },
+  })
+  @ApiNotFoundResponse({ description: 'Wishlist não encontrada' })
+  async checkItemExists(
+    @Request() req: any,
+    @Param('uuid') uuid: string,
+    @Param('productUuid') productUuid: string,
+  ): Promise<{ exists: boolean; item?: any }> {
+    const userUuid = req.user.uuid;
+    const result = await this.wishlistService.checkItemExists(uuid, userUuid, productUuid);
+    return result;
   }
 }

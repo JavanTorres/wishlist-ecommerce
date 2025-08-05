@@ -1,5 +1,6 @@
 export interface CreateWishlistItemDto {
   productUuid: string;
+  addedAt?: Date;
   notes?: string;
 }
 

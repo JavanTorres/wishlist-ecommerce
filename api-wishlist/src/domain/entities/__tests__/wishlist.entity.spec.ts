@@ -1,4 +1,5 @@
 import { WISHLIST_MAX_ITEMS } from '@shared/constants';
+import { DuplicateProductInWishlistException } from '@shared/exceptions/duplicate-product-in-wishlist.exception';
 import { WishlistLimitExceededException } from '@shared/exceptions/wishlist-limit-exceeded.exception';
 
 import { Wishlist, WishlistItem } from '../wishlist.entity';
@@ -58,6 +59,42 @@ describe('Wishlist Entity', () => {
           userUuid,
           wishlistName,
           maxItems,
+          new Date(),
+          new Date(),
+        );
+      }).not.toThrow();
+    });
+
+    it('deve lançar DuplicateProductInWishlistException quando há produtos duplicados', () => {
+      const duplicateItems = [
+        new WishlistItem('product-1', new Date(), 'Primeiro'),
+        new WishlistItem('product-1', new Date(), 'Duplicado'), // Mesmo productUuid
+      ];
+
+      expect(() => {
+        new Wishlist(
+          validUuid,
+          userUuid,
+          wishlistName,
+          duplicateItems,
+          new Date(),
+          new Date(),
+        );
+      }).toThrow(DuplicateProductInWishlistException);
+    });
+
+    it('deve aceitar produtos únicos sem lançar exceção', () => {
+      const uniqueItems = [
+        new WishlistItem('product-1', new Date(), 'Primeiro'),
+        new WishlistItem('product-2', new Date(), 'Segundo'),
+      ];
+
+      expect(() => {
+        new Wishlist(
+          validUuid,
+          userUuid,
+          wishlistName,
+          uniqueItems,
           new Date(),
           new Date(),
         );

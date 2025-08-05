@@ -2,6 +2,7 @@ import { NotFoundException, InternalServerErrorException } from '@nestjs/common'
 
 import { WishlistRepositoryContract } from '@domain/entities/repositories/wishlist.repository.contract';
 import { Wishlist, WishlistItem } from '@domain/entities/wishlist.entity';
+import { DuplicateProductInWishlistException } from '@shared/exceptions/duplicate-product-in-wishlist.exception';
 
 import { UpdateWishlistUseCase } from '../update-wishlist.usecase';
 
@@ -90,5 +91,27 @@ describe('UpdateWishlistUseCase', () => {
 
     await expect(useCase.execute(uuid, updateDto)).rejects.toBeInstanceOf(InternalServerErrorException);
     await expect(useCase.execute(uuid, updateDto)).rejects.toThrow('falha no banco');
+  });
+
+  it('deve lançar DuplicateProductInWishlistException quando há produtos duplicados (vem da entidade)', async () => {
+    const uuid = '123e4567-e89b-12d3-a456-426614174004';
+    const updateDto = {
+      userUuid: '123e4567-e89b-12d3-a456-426614174005',
+      name: 'Favoritos com Duplicatas',
+      items: [
+        {
+          productUuid: '123e4567-e89b-12d3-a456-426614174006',
+          notes: 'Produto 1',
+        },
+        {
+          productUuid: '123e4567-e89b-12d3-a456-426614174006', // Duplicado
+          notes: 'Produto 1 duplicado',
+        },
+      ],
+    };
+
+    // A exception deve vir da entidade, não do use case
+    await expect(useCase.execute(uuid, updateDto)).rejects.toThrow(DuplicateProductInWishlistException);
+    expect(repository.update).not.toHaveBeenCalled();
   });
 });

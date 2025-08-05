@@ -93,4 +93,32 @@ export class WishlistRepositoryImpl implements WishlistRepositoryContract {
       updatedWishlist.updatedAt,
     );
   }
+
+  async updateFields(fields: { uuid: string; userUuid: string; name: string; items: any[]; createdAt: Date }): Promise<Wishlist | null> {
+    const updatedWishlist = await this.model
+      .findOneAndUpdate(
+        { uuid: fields.uuid },
+        {
+          userUuid: fields.userUuid,
+          name: fields.name,
+          items: fields.items,
+          // createdAt mantém o original, updatedAt é atualizado automaticamente pelo Mongoose
+        },
+        { new: true },
+      )
+      .exec();
+
+    if (!updatedWishlist) {
+      return null;
+    }
+
+    return new Wishlist(
+      updatedWishlist.uuid,
+      updatedWishlist.userUuid,
+      updatedWishlist.name,
+      updatedWishlist.items,
+      updatedWishlist.createdAt,
+      updatedWishlist.updatedAt,
+    );
+  }
 }
