@@ -1,6 +1,7 @@
-import { Injectable, NotFoundException, InternalServerErrorException, Logger } from '@nestjs/common';
+import { Injectable, NotFoundException, Logger } from '@nestjs/common';
 
 import { WishlistRepositoryContract } from '@domain/entities/repositories/wishlist.repository.contract';
+import { ErrorHandler, WISHLIST_EXCEPTIONS } from '@shared/utils/error-handler.util';
 
 @Injectable()
 export class DeleteWishlistByIdUseCase {
@@ -16,10 +17,9 @@ export class DeleteWishlistByIdUseCase {
       }
     } catch (error) {
       this.logger.error(`Erro ao deletar wishlist uuid ${uuid}:`, error.stack || error);
-      if (error instanceof NotFoundException) {
-        throw error;
-      }
-      throw new InternalServerErrorException(error.message);
+      
+      // Usando ErrorHandler para tratamento mais limpo
+      ErrorHandler.handle(error, WISHLIST_EXCEPTIONS);
     }
   }
 }

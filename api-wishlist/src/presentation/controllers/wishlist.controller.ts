@@ -28,6 +28,7 @@ import {
 import { JwtAuthGuard } from '@modules/jwt-auth.guard';
 import { AddItemRequestDto } from '@presentation/dto/wishlist/add-item-request.dto';
 import { CreateWishlistRequestDto } from '@presentation/dto/wishlist/create-wishlist-request.dto';
+import { WishlistItemsResponseDto } from '@presentation/dto/wishlist/wishlist-items-response.dto';
 import { WishlistResponseDto } from '@presentation/dto/wishlist/wishlist-response.dto';
 import { WishlistMapper } from '@presentation/mappers/wishlist.mapper';
 import { WishlistService } from '@services/wishlist.service';
@@ -179,16 +180,17 @@ export class WishlistController {
   @ApiParam({ name: 'uuid', description: 'UUID da wishlist' })
   @ApiOkResponse({
     description: 'Lista de produtos da wishlist',
-    type: WishlistResponseDto,
+    type: WishlistItemsResponseDto,
   })
   @ApiNotFoundResponse({ description: 'Wishlist não encontrada' })
+  @ApiForbiddenResponse({ description: 'Acesso não autorizado à wishlist' })
   async getItems(
     @Request() req: any,
     @Param('uuid') uuid: string,
-  ): Promise<WishlistResponseDto> {
+  ): Promise<WishlistItemsResponseDto> {
     const userUuid = req.user.uuid;
     const wishlist = await this.wishlistService.findByIdAndUser(uuid, userUuid);
-    return WishlistMapper.toResponse(wishlist);
+    return WishlistMapper.toItemsResponse(wishlist);
   }
 
   @Get(':uuid/items/:productUuid')

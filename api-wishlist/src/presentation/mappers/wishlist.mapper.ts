@@ -1,5 +1,6 @@
 import { Wishlist } from '@domain/entities/wishlist.entity';
 
+import { WishlistItemsResponseDto } from '../dto/wishlist/wishlist-items-response.dto';
 import { WishlistResponseDto, WishlistItemResponseDto } from '../dto/wishlist/wishlist-response.dto';
 
 export class WishlistMapper {
@@ -16,6 +17,19 @@ export class WishlistMapper {
         })
       ),
       createdAt: wishlist.createdAt,
+    };
+  }
+
+  static toItemsResponse(wishlist: Wishlist): WishlistItemsResponseDto {
+    return {
+      uuid: wishlist.uuid,
+      items: wishlist.items.map(item => ({
+        productUuid: item.productUuid,
+        addedAt: item.addedAt,
+        notes: item.notes,
+      })),
+      totalItems: wishlist.items.length,
+      remainingSlots: wishlist.getRemainingSlots(),
     };
   }
 }

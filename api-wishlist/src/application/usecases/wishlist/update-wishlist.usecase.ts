@@ -1,10 +1,9 @@
-import { Injectable, NotFoundException, InternalServerErrorException, Logger } from '@nestjs/common';
+import { Injectable, NotFoundException, Logger } from '@nestjs/common';
 
 import { WishlistRepositoryContract } from '@domain/entities/repositories/wishlist.repository.contract';
 import { Wishlist, WishlistItem } from '@domain/entities/wishlist.entity';
 import { CreateWishlistDto } from '@presentation/dto/wishlist/create-wishlist.dto';
-import { DuplicateProductInWishlistException } from '@shared/exceptions/duplicate-product-in-wishlist.exception';
-import { WishlistLimitExceededException } from '@shared/exceptions/wishlist-limit-exceeded.exception';
+import { ErrorHandler, WISHLIST_EXCEPTIONS } from '@shared/utils/error-handler.util';
 
 @Injectable()
 export class UpdateWishlistUseCase {
@@ -39,16 +38,9 @@ export class UpdateWishlistUseCase {
       return wishlistUpdated;
     } catch (error) {
       this.logger.error(`Erro ao atualizar wishlist uuid ${uuid}:`, error.stack || error);
-      if (error instanceof NotFoundException) {
-        throw error;
-      }
-      if (error instanceof WishlistLimitExceededException) {
-        throw error;
-      }
-      if (error instanceof DuplicateProductInWishlistException) {
-        throw error;
-      }
-      throw new InternalServerErrorException(error.message);
+      
+      // Usando ErrorHandler para tratamento mais limpo
+      ErrorHandler.handle(error, WISHLIST_EXCEPTIONS);
     }
   }
 }
