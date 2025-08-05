@@ -32,13 +32,13 @@ async findAll(token: string): Promise<Wishlist[]> {
   return response;
 }
 
-  async findById(uuid: string): Promise<Wishlist> {
+  async findById(token, uuid: string): Promise<Wishlist> {
     const response = await this.gatewayHandler(
       `/v1/wishlists/${uuid}`,
       HttpMethodEnum.GET,
       {},
       this.apiUrl,
-      {},
+      { Authorization: token },
       false
     );
     return response;

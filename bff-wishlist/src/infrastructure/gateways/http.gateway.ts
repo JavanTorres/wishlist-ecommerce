@@ -1,6 +1,5 @@
 import { HttpService } from '@nestjs/axios';
 import { Logger } from '@nestjs/common';
-import { RequestContext } from 'nestjs-request-context';
 import { firstValueFrom } from 'rxjs';
 
 import { HttpMethodEnum } from '@application/enums/http-method.enum';

@@ -3,6 +3,7 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { GraphQLModule } from '@nestjs/graphql';
 
+import { AuthModule } from './modules/auth.module';
 import { WishlistModule } from './modules/wishlist.module';
 
 @Module({
@@ -17,6 +18,7 @@ import { WishlistModule } from './modules/wishlist.module';
       playground: true,
       introspection: true,
     }),
+    AuthModule,
     WishlistModule,
   ],
 })

@@ -1,7 +1,7 @@
 {
   "name": "bff-wishlist",
   "version": "0.0.1",
-  "description": "",
+  "description": "Backend for Frontend para gerenciamento de listas de desejos em e-commerce",
   "author": "Javan Torres",
   "private": true,
   "license": "UNLICENSED",
