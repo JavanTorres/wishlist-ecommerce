@@ -1,11 +1,13 @@
 import { Resolver, Query, Mutation, Args, ID, Context } from '@nestjs/graphql';
 import { plainToInstance } from 'class-transformer';
 
+import { AddWishlistItemUseCase } from '@application/usecases/wishlist/add-wishlist-item.usecase';
 import { CreateWishlistUseCase } from '@application/usecases/wishlist/create-wishlist.usecase';
 import { FindAllWishlistsUseCase } from '@application/usecases/wishlist/find-all-wishlists.usecase';
 import { FindWishlistByIdUseCase } from '@application/usecases/wishlist/find-wishlist-by-id.usecase';
 import { RemoveWishlistItemUseCase } from '@application/usecases/wishlist/remove-wishlist-item.usecase';
 import { AuthHelper } from '@infrastructure/helpers/auth.helper';
+import { AddWishlistItemInputDto } from '@presentation/dto/add-wishlist-item.dto';
 import { CreateWishlistInputDto } from '@presentation/dto/create-wishlist.dto';
 import { WishlistDto } from '@presentation/dto/wishlist.dto';
 
@@ -15,6 +17,7 @@ export class WishlistResolver {
     private readonly findAllWishlistsUseCase: FindAllWishlistsUseCase,
     private readonly findWishlistByIdUseCase: FindWishlistByIdUseCase,
     private readonly createWishlistUseCase: CreateWishlistUseCase,
+    private readonly addWishlistItemUseCase: AddWishlistItemUseCase,
     private readonly removeWishlistItemUseCase: RemoveWishlistItemUseCase,
   ) {}
 
@@ -57,6 +60,26 @@ export class WishlistResolver {
   ): Promise<WishlistDto> {
     const token = AuthHelper.extractToken(context);
     const result = await this.createWishlistUseCase.execute(token, input);
+    return plainToInstance(WishlistDto, result);
+  }
+
+  @Mutation(() => WishlistDto, {
+    name: 'addWishlistItem',
+    description: 'Adiciona um item à lista de desejos'
+  })
+  async addWishlistItem(
+    @Args('wishlistUuid', { 
+      type: () => ID,
+      description: 'UUID da lista de desejos'
+    }) wishlistUuid: string,
+    @Args('input', { 
+      type: () => AddWishlistItemInputDto,
+      description: 'Dados do item a ser adicionado'
+    }) input: AddWishlistItemInputDto,
+    @Context() context
+  ): Promise<WishlistDto> {
+    const token = AuthHelper.extractToken(context);
+    const result = await this.addWishlistItemUseCase.execute(token, wishlistUuid, input);
     return plainToInstance(WishlistDto, result);
   }
 

@@ -5,6 +5,7 @@ import { ConfigService } from '@nestjs/config';
 import { HttpMethodEnum } from '@application/enums/http-method.enum';
 import { WishlistGatewayPort } from '@application/ports/wishlist-gateway.port';
 import { Wishlist } from '@domain/entities/wishlist.entity';
+import { AddWishlistItemInputDto } from '@presentation/dto/add-wishlist-item.dto';
 import { CreateWishlistInputDto } from '@presentation/dto/create-wishlist.dto';
 
 import { HttpBffGateway } from './http.gateway';
@@ -62,6 +63,18 @@ export class WishlistGateway extends HttpBffGateway implements WishlistGatewayPo
       `/v1/wishlists/${wishlistUuid}/items/${productUuid}`,
       HttpMethodEnum.DELETE,
       {},
+      this.apiUrl,
+      { Authorization: token },
+      false
+    );
+    return response;
+  }
+
+  async addItem(token: string, wishlistUuid: string, itemData: AddWishlistItemInputDto): Promise<Wishlist> {
+    const response = await this.gatewayHandler(
+      `/v1/wishlists/${wishlistUuid}/items`,
+      HttpMethodEnum.POST,
+      itemData,
       this.apiUrl,
       { Authorization: token },
       false
