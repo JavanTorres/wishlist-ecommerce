@@ -3,7 +3,7 @@ import { Document } from 'mongoose';
 
 import { UUID_REGEX } from '@shared/constants';
 
-@Schema({ collection: 'wishlists', timestamps: true })
+@Schema({ _id: false })
 export class WishlistItemSubdocument {
   @Prop({ required: true })
   productUuid: string;
@@ -15,7 +15,7 @@ export class WishlistItemSubdocument {
   notes?: string;
 }
 
-@Schema()
+@Schema({ collection: 'wishlists', timestamps: true })
 export class WishlistDocument extends Document {
   @Prop({ required: true, match: UUID_REGEX })
   uuid: string;

@@ -10,4 +10,5 @@ export class WishlistResponseDto {
   name: string;
   items: WishlistItemResponseDto[];
   createdAt: Date;
+  updatedAt: Date;
 }

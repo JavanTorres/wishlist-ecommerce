@@ -17,6 +17,7 @@ export class WishlistMapper {
         })
       ),
       createdAt: wishlist.createdAt,
+      updatedAt: wishlist.updatedAt,
     };
   }
 
