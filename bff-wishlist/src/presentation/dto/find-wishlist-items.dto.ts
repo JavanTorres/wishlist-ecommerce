@@ -1,5 +1,5 @@
 import { Field, ObjectType, Int } from '@nestjs/graphql';
-import { Transform, Type } from 'class-transformer';
+import { Type } from 'class-transformer';
 
 @ObjectType({ description: 'Item da wishlist com detalhes completos' })
 export class WishlistItemDetailsDto {

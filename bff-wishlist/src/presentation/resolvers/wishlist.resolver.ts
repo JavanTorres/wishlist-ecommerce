@@ -4,6 +4,7 @@ import { plainToInstance } from 'class-transformer';
 import { AddWishlistItemUseCase } from '@application/usecases/wishlist/add-wishlist-item.usecase';
 import { CheckWishlistItemUseCase } from '@application/usecases/wishlist/check-wishlist-item.usecase';
 import { CreateWishlistUseCase } from '@application/usecases/wishlist/create-wishlist.usecase';
+import { DeleteWishlistUseCase } from '@application/usecases/wishlist/delete-wishlist.usecase';
 import { FindAllWishlistsUseCase } from '@application/usecases/wishlist/find-all-wishlists.usecase';
 import { FindWishlistByIdUseCase } from '@application/usecases/wishlist/find-wishlist-by-id.usecase';
 import { FindWishlistItemsUseCase } from '@application/usecases/wishlist/find-wishlist-items.usecase';
@@ -21,6 +22,7 @@ export class WishlistResolver {
     private readonly findAllWishlistsUseCase: FindAllWishlistsUseCase,
     private readonly findWishlistByIdUseCase: FindWishlistByIdUseCase,
     private readonly createWishlistUseCase: CreateWishlistUseCase,
+    private readonly deleteWishlistUseCase: DeleteWishlistUseCase,
     private readonly addWishlistItemUseCase: AddWishlistItemUseCase,
     private readonly checkWishlistItemUseCase: CheckWishlistItemUseCase,
     private readonly findWishlistItemsUseCase: FindWishlistItemsUseCase,
@@ -67,6 +69,22 @@ export class WishlistResolver {
     const token = AuthHelper.extractToken(context);
     const result = await this.createWishlistUseCase.execute(token, input);
     return plainToInstance(WishlistDto, result);
+  }
+
+  @Mutation(() => Boolean, {
+    name: 'deleteWishlist',
+    description: 'Deleta uma lista de desejos pelo UUID'
+  })
+  async deleteWishlist(
+    @Args('uuid', { 
+      type: () => ID,
+      description: 'UUID da lista de desejos a ser deletada'
+    }) uuid: string,
+    @Context() context
+  ): Promise<boolean> {
+    const token = AuthHelper.extractToken(context);
+    await this.deleteWishlistUseCase.execute(token, uuid);
+    return true;
   }
 
   @Query(() => CheckWishlistItemDto, {

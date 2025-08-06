@@ -10,6 +10,7 @@ export abstract class WishlistGatewayPort {
   abstract findAll(token: string): Promise<Wishlist[]>;
   abstract findById(token: string, uuid: string): Promise<Wishlist>;
   abstract create(token: string, createWishlistData: CreateWishlistInputDto): Promise<Wishlist>;
+  abstract delete(token: string, uuid: string): Promise<void>;
   abstract removeItem(token: string, wishlistUuid: string, productUuid: string): Promise<Wishlist>;
   abstract addItem(token: string, wishlistUuid: string, itemData: AddWishlistItemInputDto): Promise<Wishlist>;
   abstract checkItem(token: string, wishlistUuid: string, productUuid: string): Promise<CheckWishlistItemDto>;
