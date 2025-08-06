@@ -27,7 +27,7 @@ export class WishlistGateway extends HttpBffGateway implements WishlistGatewayPo
 
   async findAll(token: string): Promise<Wishlist[]> {
     const response = await this.gatewayHandler(
-      '/v1/wishlists',
+      '/wishlists',
       HttpMethodEnum.GET,
       {},
       this.apiUrl,
@@ -39,7 +39,7 @@ export class WishlistGateway extends HttpBffGateway implements WishlistGatewayPo
 
   async findById(token, uuid: string): Promise<Wishlist> {
     const response = await this.gatewayHandler(
-      `/v1/wishlists/${uuid}`,
+      `/wishlists/${uuid}`,
       HttpMethodEnum.GET,
       {},
       this.apiUrl,
@@ -51,7 +51,7 @@ export class WishlistGateway extends HttpBffGateway implements WishlistGatewayPo
 
   async create(token: string, createWishlistData: CreateWishlistInputDto): Promise<Wishlist> {
     const response = await this.gatewayHandler(
-      '/v1/wishlists',
+      '/wishlists',
       HttpMethodEnum.POST,
       createWishlistData,
       this.apiUrl,
@@ -63,7 +63,7 @@ export class WishlistGateway extends HttpBffGateway implements WishlistGatewayPo
 
   async update(token: string, uuid: string, updateWishlistData: UpdateWishlistInputDto): Promise<Wishlist> {
     const response = await this.gatewayHandler(
-      `/v1/wishlists/${uuid}`,
+      `/wishlists/${uuid}`,
       HttpMethodEnum.PUT,
       updateWishlistData,
       this.apiUrl,
@@ -75,7 +75,7 @@ export class WishlistGateway extends HttpBffGateway implements WishlistGatewayPo
 
   async delete(token: string, uuid: string): Promise<void> {
     await this.gatewayHandler(
-      `/v1/wishlists/${uuid}`,
+      `/wishlists/${uuid}`,
       HttpMethodEnum.DELETE,
       {},
       this.apiUrl,
@@ -86,7 +86,7 @@ export class WishlistGateway extends HttpBffGateway implements WishlistGatewayPo
 
   async removeItem(token: string, wishlistUuid: string, productUuid: string): Promise<Wishlist> {
     const response = await this.gatewayHandler(
-      `/v1/wishlists/${wishlistUuid}/items/${productUuid}`,
+      `/wishlists/${wishlistUuid}/items/${productUuid}`,
       HttpMethodEnum.DELETE,
       {},
       this.apiUrl,
@@ -98,7 +98,7 @@ export class WishlistGateway extends HttpBffGateway implements WishlistGatewayPo
 
   async addItem(token: string, wishlistUuid: string, itemData: AddWishlistItemInputDto): Promise<Wishlist> {
     const response = await this.gatewayHandler(
-      `/v1/wishlists/${wishlistUuid}/items`,
+      `/wishlists/${wishlistUuid}/items`,
       HttpMethodEnum.POST,
       itemData,
       this.apiUrl,
@@ -110,7 +110,7 @@ export class WishlistGateway extends HttpBffGateway implements WishlistGatewayPo
 
   async checkItem(token: string, wishlistUuid: string, productUuid: string): Promise<CheckWishlistItemDto> {
     const response = await this.gatewayHandler(
-      `/v1/wishlists/${wishlistUuid}/items/${productUuid}`,
+      `/wishlists/${wishlistUuid}/items/${productUuid}`,
       HttpMethodEnum.GET,
       {},
       this.apiUrl,
@@ -122,7 +122,7 @@ export class WishlistGateway extends HttpBffGateway implements WishlistGatewayPo
 
   async findWishlistItems(token: string, wishlistUuid: string): Promise<FindWishlistItemsDto> {
     const response = await this.gatewayHandler(
-      `/v1/wishlists/${wishlistUuid}/items`,
+      `/wishlists/${wishlistUuid}/items`,
       HttpMethodEnum.GET,
       {},
       this.apiUrl,

@@ -22,7 +22,7 @@ export class AuthGateway extends HttpBffGateway implements AuthGatewayPort {
 
   async login(username: string, password: string): Promise<AuthResponse> {
     const response = await this.gatewayHandler(
-      '/v1/auth/login',
+      '/auth/login',
       HttpMethodEnum.POST,
       { username, password },
       this.apiUrl,
