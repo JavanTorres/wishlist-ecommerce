@@ -7,6 +7,7 @@ import { CheckWishlistItemUseCase } from '@application/usecases/wishlist/check-w
 import { CreateWishlistUseCase } from '@application/usecases/wishlist/create-wishlist.usecase';
 import { FindAllWishlistsUseCase } from '@application/usecases/wishlist/find-all-wishlists.usecase';
 import { FindWishlistByIdUseCase } from '@application/usecases/wishlist/find-wishlist-by-id.usecase';
+import { FindWishlistItemsUseCase } from '@application/usecases/wishlist/find-wishlist-items.usecase';
 import { RemoveWishlistItemUseCase } from '@application/usecases/wishlist/remove-wishlist-item.usecase';
 import { WishlistGateway } from '@infrastructure/gateways/wishlist.gateway';
 import { WishlistResolver } from '@presentation/resolvers/wishlist.resolver';
@@ -20,6 +21,7 @@ import { WishlistResolver } from '@presentation/resolvers/wishlist.resolver';
     CreateWishlistUseCase,
     FindAllWishlistsUseCase,
     FindWishlistByIdUseCase,
+    FindWishlistItemsUseCase,
     RemoveWishlistItemUseCase,
     {
       provide: 'WishlistGatewayPort',

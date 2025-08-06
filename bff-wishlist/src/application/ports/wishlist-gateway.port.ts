@@ -1,7 +1,10 @@
+
 import { Wishlist } from '@domain/entities/wishlist.entity';
 import { AddWishlistItemInputDto } from '@presentation/dto/add-wishlist-item.dto';
 import { CheckWishlistItemDto } from '@presentation/dto/check-wishlist-item.dto';
 import { CreateWishlistInputDto } from '@presentation/dto/create-wishlist.dto';
+import { FindWishlistItemsDto } from '@presentation/dto/find-wishlist-items.dto';
+
 
 export abstract class WishlistGatewayPort {
   abstract findAll(token: string): Promise<Wishlist[]>;
@@ -10,4 +13,5 @@ export abstract class WishlistGatewayPort {
   abstract removeItem(token: string, wishlistUuid: string, productUuid: string): Promise<Wishlist>;
   abstract addItem(token: string, wishlistUuid: string, itemData: AddWishlistItemInputDto): Promise<Wishlist>;
   abstract checkItem(token: string, wishlistUuid: string, productUuid: string): Promise<CheckWishlistItemDto>;
+  abstract findWishlistItems(token: string, wishlistUuid: string): Promise<FindWishlistItemsDto>;
 }

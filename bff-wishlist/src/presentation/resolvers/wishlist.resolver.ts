@@ -6,11 +6,13 @@ import { CheckWishlistItemUseCase } from '@application/usecases/wishlist/check-w
 import { CreateWishlistUseCase } from '@application/usecases/wishlist/create-wishlist.usecase';
 import { FindAllWishlistsUseCase } from '@application/usecases/wishlist/find-all-wishlists.usecase';
 import { FindWishlistByIdUseCase } from '@application/usecases/wishlist/find-wishlist-by-id.usecase';
+import { FindWishlistItemsUseCase } from '@application/usecases/wishlist/find-wishlist-items.usecase';
 import { RemoveWishlistItemUseCase } from '@application/usecases/wishlist/remove-wishlist-item.usecase';
 import { AuthHelper } from '@infrastructure/helpers/auth.helper';
 import { AddWishlistItemInputDto } from '@presentation/dto/add-wishlist-item.dto';
 import { CheckWishlistItemDto } from '@presentation/dto/check-wishlist-item.dto';
 import { CreateWishlistInputDto } from '@presentation/dto/create-wishlist.dto';
+import { FindWishlistItemsDto } from '@presentation/dto/find-wishlist-items.dto';
 import { WishlistDto } from '@presentation/dto/wishlist.dto';
 
 @Resolver(() => WishlistDto)
@@ -21,6 +23,7 @@ export class WishlistResolver {
     private readonly createWishlistUseCase: CreateWishlistUseCase,
     private readonly addWishlistItemUseCase: AddWishlistItemUseCase,
     private readonly checkWishlistItemUseCase: CheckWishlistItemUseCase,
+    private readonly findWishlistItemsUseCase: FindWishlistItemsUseCase,
     private readonly removeWishlistItemUseCase: RemoveWishlistItemUseCase,
   ) {}
 
@@ -96,6 +99,36 @@ export class WishlistResolver {
       return {
         exists: result.exists,
         item: transformedItem
+      };
+    }
+    
+    return result;
+  }
+
+  @Query(() => FindWishlistItemsDto, {
+    name: 'findWishlistItemsDto',
+    description: 'Consulta todos os produtos da wishlist do cliente'
+  })
+  async findWishlistItems(
+    @Args('wishlistUuid', { 
+      type: () => ID,
+      description: 'UUID da lista de desejos'
+    }) wishlistUuid: string,
+    @Context() context
+  ): Promise<FindWishlistItemsDto> {
+    const token = AuthHelper.extractToken(context);
+    const result = await this.findWishlistItemsUseCase.execute(token, wishlistUuid);
+    
+    // Transformar manualmente os campos de data se existirem
+    if (result.items && result.items.length > 0) {
+      const transformedItems = result.items.map(item => ({
+        ...item,
+        addedAt: item.addedAt ? new Date(item.addedAt) : undefined,
+      }));
+      
+      return {
+        ...result,
+        items: transformedItems
       };
     }
     

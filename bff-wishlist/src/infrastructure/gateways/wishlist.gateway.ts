@@ -8,6 +8,7 @@ import { Wishlist } from '@domain/entities/wishlist.entity';
 import { AddWishlistItemInputDto } from '@presentation/dto/add-wishlist-item.dto';
 import { CheckWishlistItemDto } from '@presentation/dto/check-wishlist-item.dto';
 import { CreateWishlistInputDto } from '@presentation/dto/create-wishlist.dto';
+import { FindWishlistItemsDto } from '@presentation/dto/find-wishlist-items.dto';
 
 import { HttpBffGateway } from './http.gateway';
 
@@ -86,6 +87,18 @@ export class WishlistGateway extends HttpBffGateway implements WishlistGatewayPo
   async checkItem(token: string, wishlistUuid: string, productUuid: string): Promise<CheckWishlistItemDto> {
     const response = await this.gatewayHandler(
       `/v1/wishlists/${wishlistUuid}/items/${productUuid}`,
+      HttpMethodEnum.GET,
+      {},
+      this.apiUrl,
+      { Authorization: token },
+      false
+    );
+    return response;
+  }
+
+  async findWishlistItems(token: string, wishlistUuid: string): Promise<FindWishlistItemsDto> {
+    const response = await this.gatewayHandler(
+      `/v1/wishlists/${wishlistUuid}/items`,
       HttpMethodEnum.GET,
       {},
       this.apiUrl,
