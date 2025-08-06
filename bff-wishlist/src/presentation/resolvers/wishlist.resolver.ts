@@ -145,7 +145,7 @@ export class WishlistResolver {
   }
 
   @Query(() => FindWishlistItemsDto, {
-    name: 'findWishlistItemsDto',
+    name: 'findWishlistItems',
     description: 'Consulta todos os produtos da wishlist do cliente'
   })
   async findWishlistItems(
