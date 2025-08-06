@@ -3,6 +3,7 @@ import { Injectable, Inject, Logger, BadRequestException, UnauthorizedException 
 import { WishlistGatewayPort } from '@application/ports/wishlist-gateway.port';
 import { Wishlist } from '@domain/entities/wishlist.entity';
 import { CreateWishlistInputDto } from '@presentation/dto/create-wishlist.dto';
+import { UuidValidator } from '@shared/helpers/uuid-validator.helper';
 import { ErrorHandler, WISHLIST_EXCEPTIONS } from '@shared/utils/error-handler.util';
 
 @Injectable()
@@ -25,11 +26,7 @@ export class CreateWishlistUseCase {
       }
 
       if (createWishlistData.items) {
-        for (const item of createWishlistData.items) {
-          if (!item.productUuid?.trim()) {
-            throw new BadRequestException('UUID do produto é obrigatório para todos os itens');
-          }
-        }
+        UuidValidator.validateProductUuids(createWishlistData.items);
       }
 
       const wishlist = await this.wishlistGateway.create(token, createWishlistData);

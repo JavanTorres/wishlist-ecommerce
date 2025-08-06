@@ -4,6 +4,7 @@ import { plainToInstance } from 'class-transformer';
 import { CreateWishlistUseCase } from '@application/usecases/wishlist/create-wishlist.usecase';
 import { FindAllWishlistsUseCase } from '@application/usecases/wishlist/find-all-wishlists.usecase';
 import { FindWishlistByIdUseCase } from '@application/usecases/wishlist/find-wishlist-by-id.usecase';
+import { RemoveWishlistItemUseCase } from '@application/usecases/wishlist/remove-wishlist-item.usecase';
 import { AuthHelper } from '@infrastructure/helpers/auth.helper';
 import { CreateWishlistInputDto } from '@presentation/dto/create-wishlist.dto';
 import { WishlistDto } from '@presentation/dto/wishlist.dto';
@@ -14,6 +15,7 @@ export class WishlistResolver {
     private readonly findAllWishlistsUseCase: FindAllWishlistsUseCase,
     private readonly findWishlistByIdUseCase: FindWishlistByIdUseCase,
     private readonly createWishlistUseCase: CreateWishlistUseCase,
+    private readonly removeWishlistItemUseCase: RemoveWishlistItemUseCase,
   ) {}
 
   @Query(() => [WishlistDto], { 
@@ -55,6 +57,26 @@ export class WishlistResolver {
   ): Promise<WishlistDto> {
     const token = AuthHelper.extractToken(context);
     const result = await this.createWishlistUseCase.execute(token, input);
+    return plainToInstance(WishlistDto, result);
+  }
+
+  @Mutation(() => WishlistDto, {
+    name: 'removeWishlistItem',
+    description: 'Remove um item da lista de desejos'
+  })
+  async removeWishlistItem(
+    @Args('wishlistUuid', { 
+      type: () => ID,
+      description: 'UUID da lista de desejos'
+    }) wishlistUuid: string,
+    @Args('productUuid', { 
+      type: () => ID,
+      description: 'UUID do produto a ser removido'
+    }) productUuid: string,
+    @Context() context
+  ): Promise<WishlistDto> {
+    const token = AuthHelper.extractToken(context);
+    const result = await this.removeWishlistItemUseCase.execute(token, wishlistUuid, productUuid);
     return plainToInstance(WishlistDto, result);
   }
 }

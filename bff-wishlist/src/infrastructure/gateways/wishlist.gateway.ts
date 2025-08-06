@@ -56,4 +56,16 @@ export class WishlistGateway extends HttpBffGateway implements WishlistGatewayPo
     );
     return response;
   }
+
+  async removeItem(token: string, wishlistUuid: string, productUuid: string): Promise<Wishlist> {
+    const response = await this.gatewayHandler(
+      `/v1/wishlists/${wishlistUuid}/items/${productUuid}`,
+      HttpMethodEnum.DELETE,
+      {},
+      this.apiUrl,
+      { Authorization: token },
+      false
+    );
+    return response;
+  }
 }

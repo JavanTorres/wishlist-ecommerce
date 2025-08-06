@@ -5,6 +5,7 @@ import { ConfigModule } from '@nestjs/config';
 import { CreateWishlistUseCase } from '@application/usecases/wishlist/create-wishlist.usecase';
 import { FindAllWishlistsUseCase } from '@application/usecases/wishlist/find-all-wishlists.usecase';
 import { FindWishlistByIdUseCase } from '@application/usecases/wishlist/find-wishlist-by-id.usecase';
+import { RemoveWishlistItemUseCase } from '@application/usecases/wishlist/remove-wishlist-item.usecase';
 import { WishlistGateway } from '@infrastructure/gateways/wishlist.gateway';
 import { WishlistResolver } from '@presentation/resolvers/wishlist.resolver';
 
@@ -15,6 +16,7 @@ import { WishlistResolver } from '@presentation/resolvers/wishlist.resolver';
     CreateWishlistUseCase,
     FindAllWishlistsUseCase,
     FindWishlistByIdUseCase,
+    RemoveWishlistItemUseCase,
     {
       provide: 'WishlistGatewayPort',
       useClass: WishlistGateway,
