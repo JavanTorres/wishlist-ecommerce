@@ -9,11 +9,13 @@ import { FindAllWishlistsUseCase } from '@application/usecases/wishlist/find-all
 import { FindWishlistByIdUseCase } from '@application/usecases/wishlist/find-wishlist-by-id.usecase';
 import { FindWishlistItemsUseCase } from '@application/usecases/wishlist/find-wishlist-items.usecase';
 import { RemoveWishlistItemUseCase } from '@application/usecases/wishlist/remove-wishlist-item.usecase';
+import { UpdateWishlistUseCase } from '@application/usecases/wishlist/update-wishlist.usecase';
 import { AuthHelper } from '@infrastructure/helpers/auth.helper';
 import { AddWishlistItemInputDto } from '@presentation/dto/add-wishlist-item.dto';
 import { CheckWishlistItemDto } from '@presentation/dto/check-wishlist-item.dto';
 import { CreateWishlistInputDto } from '@presentation/dto/create-wishlist.dto';
 import { FindWishlistItemsDto } from '@presentation/dto/find-wishlist-items.dto';
+import { UpdateWishlistInputDto } from '@presentation/dto/update-wishlist.dto';
 import { WishlistDto } from '@presentation/dto/wishlist.dto';
 
 @Resolver(() => WishlistDto)
@@ -23,6 +25,7 @@ export class WishlistResolver {
     private readonly findWishlistByIdUseCase: FindWishlistByIdUseCase,
     private readonly createWishlistUseCase: CreateWishlistUseCase,
     private readonly deleteWishlistUseCase: DeleteWishlistUseCase,
+    private readonly updateWishlistUseCase: UpdateWishlistUseCase,
     private readonly addWishlistItemUseCase: AddWishlistItemUseCase,
     private readonly checkWishlistItemUseCase: CheckWishlistItemUseCase,
     private readonly findWishlistItemsUseCase: FindWishlistItemsUseCase,
@@ -68,6 +71,26 @@ export class WishlistResolver {
   ): Promise<WishlistDto> {
     const token = AuthHelper.extractToken(context);
     const result = await this.createWishlistUseCase.execute(token, input);
+    return plainToInstance(WishlistDto, result);
+  }
+
+  @Mutation(() => WishlistDto, {
+    name: 'updateWishlist',
+    description: 'Atualiza uma lista de desejos existente'
+  })
+  async updateWishlist(
+    @Args('uuid', { 
+      type: () => ID,
+      description: 'UUID da lista de desejos a ser atualizada'
+    }) uuid: string,
+    @Args('input', { 
+      type: () => UpdateWishlistInputDto,
+      description: 'Dados para atualização da lista de desejos'
+    }) input: UpdateWishlistInputDto,
+    @Context() context
+  ): Promise<WishlistDto> {
+    const token = AuthHelper.extractToken(context);
+    const result = await this.updateWishlistUseCase.execute(token, uuid, input);
     return plainToInstance(WishlistDto, result);
   }
 
