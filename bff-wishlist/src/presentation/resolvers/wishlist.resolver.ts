@@ -133,8 +133,6 @@ export class WishlistResolver {
       const transformedItem = {
         ...result.item,
         addedAt: result.item.addedAt ? new Date(result.item.addedAt) : undefined,
-        createdAt: result.item.createdAt ? new Date(result.item.createdAt) : undefined,
-        updatedAt: result.item.updatedAt ? new Date(result.item.updatedAt) : undefined,
       };
       
       return {

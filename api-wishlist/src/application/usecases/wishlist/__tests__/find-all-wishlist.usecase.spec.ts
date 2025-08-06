@@ -11,16 +11,17 @@ describe('FindAllWishlistsUseCase', () => {
 
   beforeEach(() => {
     repository = {
-      findAll: jest.fn(),
+      findAllByUserUuid: jest.fn(),
     } as any;
     useCase = new FindAllWishlistsUseCase(repository);
   });
 
-  it('deve retornar uma lista de wishlists quando o repositório.findAll resolver wishlists', async () => {
+  it('deve retornar uma lista de wishlists de um usuário quando o repositório.findAllByUserUuid resolver wishlists', async () => {
+    const userUuid = 'e1f2a3b4-c5d6-7a8b-9c0d-e1f2a3b4c5d6';
     const wishlists: Wishlist[] = [
       new Wishlist(
         'd4f8c7a2-3b6e-4567-b2f1-a9c8e6d5f4b3',
-        'e1f2a3b4-c5d6-7a8b-9c0d-e1f2a3b4c5d6',
+        userUuid,
         'Favoritos',
         [
           new WishlistItem(
@@ -33,30 +34,35 @@ describe('FindAllWishlistsUseCase', () => {
         new Date()
       ),
     ];
-    repository.findAll.mockResolvedValue(wishlists);
+    repository.findAllByUserUuid.mockResolvedValue(wishlists);
 
-    const result = await useCase.execute();
+    const result = await useCase.execute(userUuid);
 
-    expect(repository.findAll).toHaveBeenCalledTimes(1);
+    expect(repository.findAllByUserUuid).toHaveBeenCalledTimes(1);
+    expect(repository.findAllByUserUuid).toHaveBeenCalledWith(userUuid);
     expect(result).toEqual(wishlists);
   });
 
-  it('deve retornar um array vazio quando não houver wishlists', async () => {
-    repository.findAll.mockResolvedValue([]);
+  it('deve retornar um array vazio quando o usuário não possuir wishlists', async () => {
+    const userUuid = 'e1f2a3b4-c5d6-7a8b-9c0d-e1f2a3b4c5d6';
+    repository.findAllByUserUuid.mockResolvedValue([]);
 
-    const result = await useCase.execute();
+    const result = await useCase.execute(userUuid);
 
-    expect(repository.findAll).toHaveBeenCalledTimes(1);
+    expect(repository.findAllByUserUuid).toHaveBeenCalledTimes(1);
+    expect(repository.findAllByUserUuid).toHaveBeenCalledWith(userUuid);
     expect(result).toEqual([]);
   });
 
   it('deve lançar InternalServerErrorException quando o repositório lançar erro', async () => {
-    repository.findAll.mockRejectedValue(new Error('Falha no banco de dados'));
+    const userUuid = 'e1f2a3b4-c5d6-7a8b-9c0d-e1f2a3b4c5d6';
+    repository.findAllByUserUuid.mockRejectedValue(new Error('Falha no banco de dados'));
 
-    const promise = useCase.execute();
+    const promise = useCase.execute(userUuid);
 
     await expect(promise).rejects.toBeInstanceOf(InternalServerErrorException);
-    await expect(promise).rejects.toThrow('Erro ao buscar todas as wishlists: Falha no banco de dados');
-    expect(repository.findAll).toHaveBeenCalledTimes(1);
+    await expect(promise).rejects.toThrow('Erro ao buscar wishlists do usuário: Falha no banco de dados');
+    expect(repository.findAllByUserUuid).toHaveBeenCalledTimes(1);
+    expect(repository.findAllByUserUuid).toHaveBeenCalledWith(userUuid);
   });
 });

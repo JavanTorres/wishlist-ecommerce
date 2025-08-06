@@ -32,4 +32,8 @@ export class WishlistDto {
   @Type(() => Date)
   @Field({ description: 'Data de criação da lista' })
   createdAt: Date;
+
+  @Type(() => Date)
+  @Field({ description: 'Data de última atualização da lista' })
+  updatedAt: Date;
 }

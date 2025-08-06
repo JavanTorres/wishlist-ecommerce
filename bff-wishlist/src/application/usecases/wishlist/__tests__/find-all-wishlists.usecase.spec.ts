@@ -23,6 +23,7 @@ describe('FindAllWishlistsUseCase', () => {
         },
       ],
       createdAt: new Date('2024-01-01'),
+      updatedAt: new Date('2024-01-01'),
     },
     {
       uuid: '123e4567-e89b-12d3-a456-426614174004',
@@ -30,6 +31,7 @@ describe('FindAllWishlistsUseCase', () => {
       name: 'Lista de Aniversário',
       items: [],
       createdAt: new Date('2024-01-02'),
+      updatedAt: new Date('2024-01-02'),
     },
   ];
 

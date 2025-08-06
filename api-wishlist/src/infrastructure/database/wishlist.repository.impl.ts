@@ -48,6 +48,21 @@ export class WishlistRepositoryImpl implements WishlistRepositoryContract {
     );
   }
 
+  async findAllByUserUuid(userUuid: string): Promise<Wishlist[]> {
+    const wishlists = await this.model.find({ userUuid }).exec();
+    return wishlists.map(
+      (wishlist) =>
+        new Wishlist(
+          wishlist.uuid,
+          wishlist.userUuid,
+          wishlist.name,
+          wishlist.items,
+          wishlist.createdAt,
+          wishlist.updatedAt,
+        ),
+    );
+  }
+
   async findById(uuid: string): Promise<Wishlist | null> {
     const wishlist = await this.model.findOne({ uuid }).exec();
     if (!wishlist) return null;

@@ -17,8 +17,6 @@ describe('CheckWishlistItemUseCase', () => {
       addedAt: new Date('2025-08-06T01:47:20.339Z'),
       notes: 'Quero comprar na Black Friday meu The Legend of Zelda: Ocarina of Time',
       _id: '6892bfb0896fb29f57f40602',
-      createdAt: new Date('2025-08-06T02:36:32.253Z'),
-      updatedAt: new Date('2025-08-06T02:36:32.253Z'),
     },
   };
 
@@ -258,8 +256,6 @@ describe('CheckWishlistItemUseCase', () => {
         expect(result).toEqual(mockItemExists);
         expect(result.item?.notes).toBe(mockItemExists.item?.notes);
         expect(result.item?._id).toBe(mockItemExists.item?._id);
-        expect(result.item?.createdAt).toEqual(mockItemExists.item?.createdAt);
-        expect(result.item?.updatedAt).toEqual(mockItemExists.item?.updatedAt);
       });
     });
   });

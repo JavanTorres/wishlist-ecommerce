@@ -23,6 +23,7 @@ describe('AddWishlistItemUseCase', () => {
       },
     ],
     createdAt: new Date('2025-08-06T01:47:20.339Z'),
+    updatedAt: new Date('2025-08-06T01:47:20.339Z'),
   };
 
   const validToken = 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluIiwidXVpZCI6IjEyM2U0NTY3LWU4OWItMTJkMy1hNDU2LTQyNjYxNDE3NDAwMSIsImlhdCI6MTc1NDQzMDY1OCwiZXhwIjoxNzU0NDczODU4fQ.gVIehoY2UVd7h7Zj3wpRj2IMljEF0iZxUks0x7_eOaY';

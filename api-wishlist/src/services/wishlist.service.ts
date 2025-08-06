@@ -22,8 +22,8 @@ export class WishlistService {
     return this.createWishlistUseCase.execute(createWishlistDto);
   }
 
-  async findAll(): Promise<Wishlist[]> {
-    return this.findAllWishlistsUseCase.execute();
+  async findAll(userUuid: string): Promise<Wishlist[]> {
+    return this.findAllWishlistsUseCase.execute(userUuid);
   }
 
   async findById(uuid: string): Promise<Wishlist> {

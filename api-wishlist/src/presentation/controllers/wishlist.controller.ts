@@ -66,14 +66,15 @@ export class WishlistController {
 
   @Get()
   @HttpCode(HttpStatus.OK)
-  @ApiOperation({ summary: 'Retorna todas as wishlists' })
+  @ApiOperation({ summary: 'Retorna todas as wishlists do usuário logado' })
   @ApiOkResponse({
-    description: 'Lista de wishlists',
+    description: 'Lista de wishlists do usuário',
     type: WishlistResponseDto,
     isArray: true,
   })
-  async findAll(): Promise<WishlistResponseDto[]> {
-    const wishlists = await this.wishlistService.findAll();
+  async findAll(@Request() req: any): Promise<WishlistResponseDto[]> {
+    const userUuid = req.user.uuid;
+    const wishlists = await this.wishlistService.findAll(userUuid);
     return wishlists.map(WishlistMapper.toResponse);
   }
 

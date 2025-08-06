@@ -10,4 +10,5 @@ export class Wishlist {
   name: string;
   items: WishlistItem[];
   createdAt: Date;
+  updatedAt: Date;
 }

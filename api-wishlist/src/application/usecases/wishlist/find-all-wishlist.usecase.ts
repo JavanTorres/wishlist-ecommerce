@@ -9,13 +9,13 @@ export class FindAllWishlistsUseCase {
 
   constructor(private readonly wishlistRepository: WishlistRepositoryContract) {}
 
-  async execute(): Promise<Wishlist[]> {
+  async execute(userUuid: string): Promise<Wishlist[]> {
     try {
-      return await this.wishlistRepository.findAll();
+      return await this.wishlistRepository.findAllByUserUuid(userUuid);
     } catch (error) {
-      this.logger.error('Erro ao buscar todas as wishlists:', error.stack || error);
+      this.logger.error(`Erro ao buscar wishlists do usuário ${userUuid}:`, error.stack || error);
       throw new InternalServerErrorException(
-        `Erro ao buscar todas as wishlists: ${error.message}`
+        `Erro ao buscar wishlists do usuário: ${error.message}`
       );
     }
   }
