@@ -84,6 +84,17 @@ curl -X POST http://localhost:3000/v1/auth/login \
   -d '{"username": "admin", "password": "admin"}'
 ```
 
+Usar LOGIN 'admin' e  PASSWORD 'password':
+
+```json
+
+{
+    "username": "admin",
+    "password": "password"
+}
+
+```
+
 ## 🐳 Docker
 
 ### Estrutura do Docker
