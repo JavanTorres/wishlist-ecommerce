@@ -11,7 +11,7 @@ Este guia apresenta todas as queries e mutations disponíveis na API GraphQL do 
 
 ### Ferramentas Recomendadas
 
-- **Apollo Studio**: `https://studio.apollographql.com/`
+- **Apollo Studio**: `https://studio.apollographql.com/sandbox/explorer`
   - **📌 Recomendado**: Conecte o Apollo Studio ao endpoint local `http://localhost:4000/graphql` para uma experiência de desenvolvimento otimizada
   - Interface amigável com autocompletar e documentação automática
   - Suporte completo para introspection do schema GraphQL
