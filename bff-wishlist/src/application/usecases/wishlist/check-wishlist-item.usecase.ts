@@ -1,4 +1,4 @@
-import { Injectable, Inject, Logger, UnauthorizedException, NotFoundException } from '@nestjs/common';
+import { Injectable, Inject, Logger, UnauthorizedException } from '@nestjs/common';
 
 import { WishlistGatewayPort } from '@application/ports/wishlist-gateway.port';
 import { CheckWishlistItemDto } from '@presentation/dto/check-wishlist-item.dto';
@@ -31,9 +31,8 @@ export class CheckWishlistItemUseCase {
     } catch (error) {
       this.logger.error(`Erro ao verificar item ${productUuid} na wishlist ${wishlistUuid}:`, error.stack || error);
 
-
-        if (error.message?.includes('not found') || error.message?.includes('404') || error.statusCode === 404) {
-        throw new NotFoundException(error.message || error.stack);
+      if (error.message?.includes('not found') || error.message?.includes('404') || error.message?.includes('não encontrada') || error.statusCode === 404) {
+        return { exists: false };
       }
 
       ErrorHandler.handle(error, WISHLIST_EXCEPTIONS);
