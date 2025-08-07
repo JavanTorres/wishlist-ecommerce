@@ -189,12 +189,17 @@ src/
 
 ## 📈 Próximos Passos
 
+- [ ] Implementar lazy loading para consultas pesadas
+- [ ] Adicionar headers de segurança (nosniff, etc.)
 - [ ] Implementar paginação nas listagens
-- [ ] Adicionar filtros avançados
+- [ ] Adicionar filtros avançados e busca
 - [ ] Implementar cache com Redis
-- [ ] Adicionar métricas e observabilidade
-- [ ] Adicionar rate limiting
-- [ ] Implementar soft delete
+- [ ] Adicionar métricas e observabilidade (Prometheus/Grafana)
+- [ ] Implementar rate limiting por usuário/IP
+- [ ] Implementar soft delete para auditoria
+- [ ] Adicionar logs estruturados
+- [ ] Implementar testes de carga
+- [ ] Adicionar versionamento da API
 
 ## 🤝 Integração com BFF
 
